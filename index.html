@@ -1,0 +1,52 @@
+<html>
+<head>
+  <script src="lib/codemirror.js"></script>
+  <link rel="stylesheet" href="lib/codemirror.css">
+  <link rel="stylesheet" href="theme/ambiance.css">
+  <link rel="stylesheet" href="addon/hint/show-hint.css">
+  <script src="addon/mode/simple.js"></script>
+  <script src="addon/hint/show-hint.js"></script>
+  <script src="addon/hint/ce-anyword-hint.js"></script>
+  <script src="mode/javascript/javascript.js"></script>
+  <script src="mode/ce/ce.js"></script>
+
+  <style>
+    .CodeMirror {
+      height: 500px;
+    }
+  </style>
+</head>
+
+<body>
+
+<textarea id='code'>
+-- Here is a conceptualise statement
+conceptualise a ~ man ~ P that
+  is a person and
+  is an old man and
+  has the value N as ~ age ~ and
+  ~ is the sibling of ~ the value K.
+
+there is a man named John that
+  has 'fifty three' as age and
+  has 53 as age and
+  is the sibling of the person "Jill J".
+
+-- incorrect syntax
+there is an old man named Barry B that
+  has the value fifty three as age and
+  is the sibling of the person Jill J.
+</textarea>
+
+<script>
+  CodeMirror.fromTextArea(document.getElementById('code'), {
+    lineNumbers: true,
+    mode: 'ce',
+    tabSize: 2,
+    lineWrapping: true,
+    theme: 'ambiance',
+    extraKeys: {Tab: 'autocomplete'}
+  });
+</script>
+</body>
+</html>
