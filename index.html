@@ -25,7 +25,8 @@ conceptualise a ~ man ~ P that
   is a person and
   is an old man and
   has the value N as ~ age ~ and
-  ~ is the sibling of ~ the value K.
+  ~ is the sibling of ~ the value K and
+  ~ is the sibling of ~ the old person K.
 
 there is a man named John that
   has 'fifty three' as age and
@@ -39,6 +40,8 @@ there is an old man named Barry B that
 </textarea>
 
 <script>
+  var lastKeyPressed;
+
   CodeMirror.fromTextArea(document.getElementById('code'), {
     lineNumbers: true,
     mode: 'ce',
@@ -49,15 +52,23 @@ there is an old man named Barry B that
   })
 
   .on('keyup', function(cm, event) {
-    // cm.state.completionActive enables keyboard navigation in autocomplete list
-    // event.keyCodes: 13 = enter, 32 = space, 8 = backspace, 9 = tab
-    if (!cm.state.completionActive &&
-      event.keyCode !== 13 &&
-      event.keyCode !== 32 &&
-      event.keyCode !== 8 &&
-      event.keyCode !== 9) {
-      CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
+    // event.keyCodes: 91 = cmd, 17 = ctrl
+    if (lastKeyPressed &&
+        lastKeyPressed !== 91 &&
+        lastKeyPressed !== 17) {
+      // cm.state.completionActive enables keyboard navigation in autocomplete list
+      // event.keyCodes: 13 = enter, 32 = space, 8 = backspace, 9 = tab, 190 = .
+      if (!cm.state.completionActive &&
+        event.keyCode !== 13 &&
+        event.keyCode !== 32 &&
+        event.keyCode !== 8 &&
+        event.keyCode !== 9 &&
+        event.keyCode !== 190) {
+        CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
+      }
     }
+
+    lastKeyPressed = event.keyCode;
   })
 </script>
 </body>
