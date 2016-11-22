@@ -46,7 +46,19 @@ there is an old man named Barry B that
     lineWrapping: true,
     theme: 'ambiance',
     extraKeys: {Tab: 'autocomplete'}
-  });
+  })
+
+  .on('keyup', function(cm, event) {
+    // cm.state.completionActive enables keyboard navigation in autocomplete list
+    // event.keyCodes: 13 = enter, 32 = space, 8 = backspace, 9 = tab
+    if (!cm.state.completionActive &&
+      event.keyCode !== 13 &&
+      event.keyCode !== 32 &&
+      event.keyCode !== 8 &&
+      event.keyCode !== 9) {
+      CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
+    }
+  })
 </script>
 </body>
 </html>
