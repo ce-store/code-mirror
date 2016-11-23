@@ -135,7 +135,7 @@
     };
 
     var prevIsA = function(state, stream) {
-      searchFor(state, stream, 'and', null, CONCEPT);
+      searchFor(state, stream, 'and', '.', CONCEPT);
 
       var word = stream.current().trim();
       state.concepts.push(word);
