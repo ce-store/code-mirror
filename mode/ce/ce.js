@@ -124,7 +124,7 @@
       }
       addToPrevWords(state, '.');
       state.currentWord = '';
-      state.statementType = null;
+      state.inSentence = false;
       return null;
     };
 
@@ -175,7 +175,7 @@
           currentWord: '',
           space: false,
           indented: 0,
-          statementType: null,
+          inSentence: false,
           concepts: ['thing', 'value'],
           properties: [],
           rules: []
@@ -197,6 +197,12 @@
           }
           state.currentWord = '';
           state.space = false;
+        }
+
+        if (stream.match('conceptualise', false) ||
+            stream.match('there ', false) ||
+            stream.match('the ', false)) {
+          state.inSentence = true;
         }
 
         if (stream.match('--')) {
@@ -273,7 +279,7 @@
       },
 
       indent: function(state) {
-        if (state.statementType) {
+        if (state.inSentence) {
           return 2;
         } else {
           return 0;
