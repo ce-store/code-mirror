@@ -4,9 +4,11 @@
   <link rel="stylesheet" href="lib/codemirror.css">
   <link rel="stylesheet" href="theme/ambiance.css">
   <link rel="stylesheet" href="addon/hint/show-hint.css">
-  <script src="addon/mode/simple.js"></script>
+  <link rel="stylesheet" href="addon/lint/lint.css">
   <script src="addon/hint/show-hint.js"></script>
   <script src="addon/hint/ce-anyword-hint.js"></script>
+  <script src="addon/lint/lint.js"></script>
+  <script src="addon/selection/active-line.js"></script>
   <script src="mode/javascript/javascript.js"></script>
   <script src="mode/ce/ce.js"></script>
 
@@ -26,7 +28,7 @@ conceptualise a ~ man ~ P that
   is an old man and
   has the value N as ~ age ~ and
   ~ is the sibling of ~ the value K and
-  ~ is the sibling of ~ the old person K.
+  ~ is the sibling of ~ the man M.
 
 there is a man named John that
   has 'fifty three' as age and
@@ -37,18 +39,36 @@ there is a man named John that
 there is an old man named Barry B that
   has the value fifty three as age and
   is the sibling of the person Jill J.
+
+man
+
+perform reset store with starting uid '1'.
+
+perform load sentences from url '/ce-store/ce/general/agents/agent_model.ce'.
+
+perform set 'ce root' to 'http://ce-models.eu-gb.mybluemix.net/medicine/'.
+
+perform run the rule executor agent named 'med_rules'.
 </textarea>
 
 <script>
   var lastKeyPressed;
 
   CodeMirror.fromTextArea(document.getElementById('code'), {
-    lineNumbers: true,
     mode: 'ce',
     tabSize: 2,
+    lineNumbers: true,
     lineWrapping: true,
+    styleActiveLine: true,
     theme: 'ambiance',
-    extraKeys: {Tab: 'autocomplete'}
+    extraKeys: {
+      Tab: function(cm) {
+        var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+        cm.replaceSelection(spaces);
+      }
+    },
+    // gutters: ["CodeMirror-lint-markers"],
+    // lint: true
   })
 
   .on('keyup', function(cm, event) {
@@ -57,10 +77,14 @@ there is an old man named Barry B that
         lastKeyPressed !== 91 &&
         lastKeyPressed !== 17) {
       // cm.state.completionActive enables keyboard navigation in autocomplete list
-      // event.keyCodes: 13 = enter, 32 = space, 8 = backspace, 9 = tab, 190 = .
+      // event.keyCodes: 13 = enter, 32 = space, 8 = backspace, 9 = tab, 190 = ., 37-30 = arrow keys
       if (!cm.state.completionActive &&
         event.keyCode !== 13 &&
         event.keyCode !== 32 &&
+        event.keyCode !== 37 &&
+        event.keyCode !== 38 &&
+        event.keyCode !== 39 &&
+        event.keyCode !== 40 &&
         event.keyCode !== 8 &&
         event.keyCode !== 9 &&
         event.keyCode !== 190) {

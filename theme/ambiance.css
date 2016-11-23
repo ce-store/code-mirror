@@ -7,13 +7,15 @@
 
 .cm-s-ambiance .cm-keyword { color: #cda869; }
 .cm-s-ambiance .cm-atom { color: #CF7EA9; }
+.cm-s-ambiance .cm-concept { color: #CF7EA9; }
 .cm-s-ambiance .cm-number { color: #78CF8A; }
 .cm-s-ambiance .cm-def { color: #aac6e3; }
-.cm-s-ambiance .cm-variable { color: #ffb795; }
-.cm-s-ambiance .cm-variable-2 { color: #a298ea; }
+.cm-s-ambiance .cm-variable { color: #a298ea; }
+.cm-s-ambiance .cm-variable-2 { color: #ffb795; }
 .cm-s-ambiance .cm-variable-3 { color: #faded3; }
 .cm-s-ambiance .cm-property { color: #eed1b3; }
 .cm-s-ambiance .cm-operator { color: #fa8d6a; }
+.cm-s-ambiance .cm-property { color: #fa8d6a; }
 .cm-s-ambiance .cm-comment { color: #555; font-style:italic; }
 .cm-s-ambiance .cm-string { color: #8f9d6a; }
 .cm-s-ambiance .cm-string-2 { color: #9d937c; }

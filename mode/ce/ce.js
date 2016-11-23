@@ -25,6 +25,10 @@
     var ch, word;
 
     var CONCEPT = 'concept';
+    var VARIABLE = 'variable';
+    var PROPERTY = 'property';
+    // var KEYWORD = 'keyword';
+    var COMMENT = 'comment';
 
     var addToPrevWords = function(state, word) {
       state.prevWords.push(word.trim());
@@ -63,7 +67,7 @@
 
     var comment = function(stream) {
       stream.skipToEnd();
-      return 'comment';
+      return COMMENT;
     };
 
     var keyword = function(state, words) {
@@ -78,28 +82,36 @@
         state.statementType = 'there is';
       }
 
-      // return 'keyword';
+      // return KEYWORD;
       return null;
     };
 
     var tilde = function(state, stream) {
       var result;
+      stream.skipTo('~');
+      state.currentWord = '~';
+      var word = stream.current().substring(1).trim();
+
       if (state.prevWords.peek(2) === 'conceptualise' &&
           (state.prevWords.peek(1) === 'a' ||
           state.prevWords.peek(1) === 'an')) {
-        result = 'atom';
+        if (word.length) {
+          state.concepts.push(word);
+        }
+        result = CONCEPT;
       } else {
-        result = 'operator';
+        if (word.length) {
+          state.properties.push(word);
+        }
+        result = PROPERTY;
       }
-      stream.skipTo('~');
-      state.currentWord = '~';
       return result;
     };
 
-    var value = function(state) {
-      state.currentWord = CONCEPT;
-      return 'atom';
-    };
+    // var value = function(state) {
+    //   state.currentWord = CONCEPT;
+    //   return CONCEPT;
+    // };
 
     // var isA = function(state) {
     //   addToPrevWords(state, 'is');
@@ -109,14 +121,14 @@
 
     var singleQuotes = function(state, stream) {
       stream.skipTo('\'');
-      state.currentWord = "''";
-      return 'variable-2';
+      state.currentWord = '\'\'';
+      return VARIABLE;
     };
 
     var doubleQuotes = function(state, stream) {
       stream.skipTo('"');
       state.currentWord = '""';
-      return 'variable-2';
+      return VARIABLE;
     };
 
     var fullStop = function(state) {
@@ -137,12 +149,16 @@
 
     var prevIsA = function(state, stream) {
       searchFor(state, stream, 'and', null, CONCEPT);
-      return 'atom';
+
+      var word = stream.current().trim();
+      state.concepts.push(word);
+
+      return CONCEPT;
     };
 
     var prevNamed = function(state, stream) {
       searchFor(state, stream, ' ');
-      return 'variable-2';
+      return VARIABLE;
     };
 
     var prevHas = function(state, stream) {
@@ -151,33 +167,23 @@
         return null;
       }
 
-      searchFor(state, stream, ' ');
-      return 'variable-2';
+      searchFor(state, stream, ' ', '.');
+      return VARIABLE;
     };
 
     var prevThereIs = function(state, stream) {
       searchFor(state, stream, 'named');
-      return 'atom';
+      return CONCEPT;
     };
 
     var prevConceptualiseTilde = function(state, stream) {
       searchFor(state, stream, ' ');
-      return 'variable-2';
-    };
-
-    var prevPropertyTilde = function(state, stream) {
-      var lastWord = searchFor(state, stream, 'and', '.');
-
-      stream.backUp(lastWord.length);
-      word = word.substring(0, word.length - lastWord.length);
-
-      addToPrevWords(state, word);
-      return 'atom';
+      return VARIABLE;
     };
 
     var prevAs = function(state, stream) {
       searchFor(state, stream, 'and', '.');
-      return 'operator';
+      return PROPERTY;
     };
 
     return {
@@ -187,7 +193,9 @@
           currentWord: '',
           space: false,
           indented: 0,
-          statementType: null
+          statementType: null,
+          concepts: ['thing', 'value'],
+          properties: []
         };
         return state;
       },
@@ -209,24 +217,22 @@
 
         if (stream.match('--')) {
           return comment(stream);
-        } else if (stream.match('conceptualise an')) {
-          return keyword(state, ['conceptualise', 'an']);
-        } else if (stream.match('conceptualise a')) {
-          return keyword(state, ['conceptualise', 'a']);
-        } else if (stream.match('there is an')) {
-          return keyword(state, ['there', 'is', 'an']);
-        } else if (stream.match('there is a')) {
-          return keyword(state, ['there', 'is', 'a']);
-        } else if (stream.match('named')) {
-          return keyword(state, ['named']);
+        // } else if (stream.match('conceptualise an')) {
+        //   return keyword(state, ['conceptualise', 'an']);
+        // } else if (stream.match('conceptualise a')) {
+        //   return keyword(state, ['conceptualise', 'a']);
+        // } else if (stream.match('there is an')) {
+        //   return keyword(state, ['there', 'is', 'an']);
+        // } else if (stream.match('there is a')) {
+        //   return keyword(state, ['there', 'is', 'a']);
+        // } else if (stream.match('named')) {
+        //   return keyword(state, ['named']);
+        // } else if (stream.match('perform')) {
+        //   return keyword(state, ['perform']);
         } else if (stream.match('~')) {
           return tilde(state, stream);
-        } else if (stream.match('value')) {
-          return value(state);
-        // } else if (stream.match('is an')) {
-        //   return isA(state);
-        // } else if (stream.match('is a')) {
-        //   return isA(state);
+        // } else if (stream.match('value')) {
+        //   return value(state);
         } else if (stream.match('\'')) {
           return singleQuotes(state, stream);
         } else if (stream.match('"')) {
@@ -240,36 +246,51 @@
           var prev2 = state.prevWords.peek(2);
           var prev3 = state.prevWords.peek(3);
 
-          if (prev3 !== 'there' &&
+          if (prev3 !== 'there' && // that is a _person_
               prev2 === 'is' &&
               (prev1 === 'a' ||
               prev1 === 'an')) {
             return prevIsA(state, stream);
-          } else if (prev1 === 'named') {
+          } else if (prev1 === 'named') { // named _John_
             return prevNamed(state, stream);
-          } else if (prev1 === 'has') {
-          //     (prev2 === 'the' &&
-          //     prev1 === 'value')) {
+          } else if (prev1 === 'has') {   // has _53_ as
             return prevHas(state, stream);
-          } else if (prev3 === 'there' &&
+          } else if (prev2 === 'the' &&   // the value _53_
+              prev1 === CONCEPT) {
+            return prevHas(state, stream);
+          } else if (prev3 === 'there' && // there is a _man_ named
               prev2 === 'is' &&
               (prev1 === 'a' ||
               prev1 === 'an')) {
             return prevThereIs(state, stream);
-          } else if (prev3 === 'conceptualise' &&
+          } else if (prev3 === 'conceptualise' && // conceptualise a ~ man ~ _M_
               prev2 === 'a' &&
               prev1 === '~') {
             return prevConceptualiseTilde(state, stream);
-          } else if (prev2 === '~' &&
-              prev1 === 'the') {
-            return prevPropertyTilde(state, stream);
-          } else if (prev1 === 'as') {
-            return prevAs(state, stream);
+          }
+
+          var result;
+          state.concepts.forEach(function(concept) {
+            if (stream.match(concept)) {
+              state.currentWord = CONCEPT;
+              result = CONCEPT;
+            }
+          });
+          if (!result) {
+            state.properties.forEach(function(property) {
+              if (stream.match(property)) {
+                state.currentWord = PROPERTY;
+                result = PROPERTY;
+              }
+            });
+          }
+
+          if (result) {
+            return result;
           }
 
           ch = stream.next();
           state.currentWord += ch;
-          console.log(state.prevWords);
         }
 
         return null;
@@ -281,7 +302,9 @@
         } else {
           return 0;
         }
-      }
+      },
+
+      lineComment: '--'
     };
   });
 });
