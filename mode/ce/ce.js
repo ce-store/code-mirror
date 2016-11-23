@@ -70,27 +70,28 @@
       return COMMENT;
     };
 
-    var keyword = function(state, words) {
-      for (var i = 0; i < words.length - 1; ++i) {
-        addToPrevWords(state, words[i]);
-      }
-      state.currentWord = words.peek();
+    // var keyword = function(state, words) {
+    //   for (var i = 0; i < words.length - 1; ++i) {
+    //     addToPrevWords(state, words[i]);
+    //   }
+    //   state.currentWord = words.peek();
 
-      if (words[0] === 'conceptualise') {
-        state.statementType = 'conceptualise';
-      } else if (words[0] === 'there') {
-        state.statementType = 'there is';
-      }
+    //   if (words[0] === 'conceptualise') {
+    //     state.statementType = 'conceptualise';
+    //   } else if (words[0] === 'there') {
+    //     state.statementType = 'there is';
+    //   }
 
-      // return KEYWORD;
-      return null;
-    };
+    //   // return KEYWORD;
+    //   return null;
+    // };
 
     var tilde = function(state, stream) {
       var result;
       stream.skipTo('~');
       state.currentWord = '~';
       var word = stream.current().substring(1).trim();
+      stream.next();
 
       if (state.prevWords.peek(2) === 'conceptualise' &&
           (state.prevWords.peek(1) === 'a' ||
@@ -121,12 +122,14 @@
 
     var singleQuotes = function(state, stream) {
       stream.skipTo('\'');
+      stream.next();
       state.currentWord = '\'\'';
       return VARIABLE;
     };
 
     var doubleQuotes = function(state, stream) {
       stream.skipTo('"');
+      stream.next();
       state.currentWord = '""';
       return VARIABLE;
     };
@@ -181,10 +184,10 @@
       return VARIABLE;
     };
 
-    var prevAs = function(state, stream) {
-      searchFor(state, stream, 'and', '.');
-      return PROPERTY;
-    };
+    // var prevAs = function(state, stream) {
+    //   searchFor(state, stream, 'and', '.');
+    //   return PROPERTY;
+    // };
 
     return {
       startState: function() {
@@ -203,6 +206,7 @@
       token: function(stream, state) {
         if (stream.sol()) {
           state.indented = stream.indentation();
+          // console.log(state.prevWords);
         }
 
         ch = stream.peek();
@@ -273,14 +277,18 @@
           state.concepts.forEach(function(concept) {
             if (stream.match(concept)) {
               state.currentWord = CONCEPT;
-              result = CONCEPT;
+              if (!stream.peek() || !stream.peek().match(/[a-z]/i)) {
+                result = CONCEPT;
+              }
             }
           });
           if (!result) {
             state.properties.forEach(function(property) {
               if (stream.match(property)) {
                 state.currentWord = PROPERTY;
-                result = PROPERTY;
+                if (!stream.peek() || !stream.peek().match(/[a-z]/i)) {
+                  result = PROPERTY;
+                }
               }
             });
           }
