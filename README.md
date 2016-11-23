@@ -14,3 +14,7 @@ This project defines a CodeMirror [mode](http://codemirror.net/doc/manual.html#m
 ### Coming soon!
 
 * Linting
+
+### Example
+
+You can try out an example by opening `index.html` in your browser.
