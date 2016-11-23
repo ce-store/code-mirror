@@ -27,8 +27,8 @@
     var CONCEPT = 'concept';
     var VARIABLE = 'variable';
     var PROPERTY = 'property';
-    // var KEYWORD = 'keyword';
     var COMMENT = 'comment';
+    var RULE = 'rule';
 
     var addToPrevWords = function(state, word) {
       state.prevWords.push(word.trim());
@@ -70,22 +70,6 @@
       return COMMENT;
     };
 
-    // var keyword = function(state, words) {
-    //   for (var i = 0; i < words.length - 1; ++i) {
-    //     addToPrevWords(state, words[i]);
-    //   }
-    //   state.currentWord = words.peek();
-
-    //   if (words[0] === 'conceptualise') {
-    //     state.statementType = 'conceptualise';
-    //   } else if (words[0] === 'there') {
-    //     state.statementType = 'there is';
-    //   }
-
-    //   // return KEYWORD;
-    //   return null;
-    // };
-
     var tilde = function(state, stream) {
       var result;
       stream.skipTo('~');
@@ -109,16 +93,16 @@
       return result;
     };
 
-    // var value = function(state) {
-    //   state.currentWord = CONCEPT;
-    //   return CONCEPT;
-    // };
+    var squareBrackets = function(state, stream) {
+      stream.skipTo(']');
+      state.currentWord = '[]';
 
-    // var isA = function(state) {
-    //   addToPrevWords(state, 'is');
-    //   state.currentWord = 'a';
-    //   return 'null';
-    // };
+      var word = stream.current().substring(1).trim();
+      state.rules.push(word);
+      stream.next();
+
+      return RULE;
+    };
 
     var singleQuotes = function(state, stream) {
       stream.skipTo('\'');
@@ -184,11 +168,6 @@
       return VARIABLE;
     };
 
-    // var prevAs = function(state, stream) {
-    //   searchFor(state, stream, 'and', '.');
-    //   return PROPERTY;
-    // };
-
     return {
       startState: function() {
         var state = {
@@ -198,7 +177,8 @@
           indented: 0,
           statementType: null,
           concepts: ['thing', 'value'],
-          properties: []
+          properties: [],
+          rules: []
         };
         return state;
       },
@@ -221,22 +201,10 @@
 
         if (stream.match('--')) {
           return comment(stream);
-        // } else if (stream.match('conceptualise an')) {
-        //   return keyword(state, ['conceptualise', 'an']);
-        // } else if (stream.match('conceptualise a')) {
-        //   return keyword(state, ['conceptualise', 'a']);
-        // } else if (stream.match('there is an')) {
-        //   return keyword(state, ['there', 'is', 'an']);
-        // } else if (stream.match('there is a')) {
-        //   return keyword(state, ['there', 'is', 'a']);
-        // } else if (stream.match('named')) {
-        //   return keyword(state, ['named']);
-        // } else if (stream.match('perform')) {
-        //   return keyword(state, ['perform']);
         } else if (stream.match('~')) {
           return tilde(state, stream);
-        // } else if (stream.match('value')) {
-        //   return value(state);
+        } else if (stream.match('[')) {
+          return squareBrackets(state, stream);
         } else if (stream.match('\'')) {
           return singleQuotes(state, stream);
         } else if (stream.match('"')) {
