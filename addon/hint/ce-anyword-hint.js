@@ -35,7 +35,11 @@
     'and',
     'as',
     'the',
-    'value'
+    'value',
+    'perform reset store with starting uid',
+    'perform load sentences from url',
+    'perform set \'ce root\' to ',
+    'perform run'
   ];
 
   CodeMirror.registerHelper("hint", "ce", function(editor, options) {
