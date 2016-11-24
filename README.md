@@ -4,14 +4,14 @@
 
 This project defines a CodeMirror [mode](http://codemirror.net/doc/manual.html#modeapi) for Controlled English.
 
-### Features:
+### Features
 
 * Syntax highlighting
 * Autocomplete
 * Line numbers
 * Auto indentation
 
-### Use:
+### Use
 
 You can install this using bower:
 
