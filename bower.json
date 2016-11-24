@@ -1,0 +1,31 @@
+{
+  "name": "codemirror-ce",
+  "homepage": "https://github.com/ce-store/code-mirror",
+  "description": "CodeMirror mode for Controlled English",
+  "main": [
+    "mode/ce/ce.js",
+    "addon/hint/ce-anyword-hint.js"
+  ],
+  "keywords": [
+    "codemirror",
+    "mode",
+    "ce",
+    "controlled",
+    "english",
+    "syntax",
+    "highlighter",
+    "autocomplete"
+  ],
+  "authors": [
+    "Anna Thomas <annat21@live.co.uk>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "codemirror": "^5.19.0"
+  }
+}

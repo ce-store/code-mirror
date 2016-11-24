@@ -24,11 +24,11 @@
 
     var ch, word;
 
-    var CONCEPT = 'concept';
-    var VARIABLE = 'variable';
-    var PROPERTY = 'property';
+    var CONCEPT = 'atom';
+    var VARIABLE = 'builtin';
+    var PROPERTY = 'operator';
     var COMMENT = 'comment';
-    var RULE = 'rule';
+    var RULE = 'def';
 
     var addToPrevWords = function(state, word) {
       state.prevWords.push(word.trim());

@@ -1,16 +1,15 @@
 <html>
 <head>
-  <script src="lib/codemirror.js"></script>
-  <link rel="stylesheet" href="lib/codemirror.css">
-  <link rel="stylesheet" href="theme/ambiance.css">
-  <link rel="stylesheet" href="addon/hint/show-hint.css">
-  <link rel="stylesheet" href="addon/lint/lint.css">
-  <script src="addon/hint/show-hint.js"></script>
-  <script src="addon/hint/ce-anyword-hint.js"></script>
-  <script src="addon/lint/lint.js"></script>
-  <script src="addon/selection/active-line.js"></script>
-  <script src="mode/javascript/javascript.js"></script>
+  <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="bower_components/codemirror/theme/ambiance.css">
+  <link rel="stylesheet" href="bower_components/codemirror/addon/hint/show-hint.css">
+
+  <script src="bower_components/codemirror/lib/codemirror.js"></script>
+  <script src="bower_components/codemirror/addon/hint/show-hint.js"></script>
+  <script src="bower_components/codemirror/addon/selection/active-line.js"></script>
+
   <script src="mode/ce/ce.js"></script>
+  <script src="addon/hint/ce-anyword-hint.js"></script>
 
   <style>
     body {
@@ -165,18 +164,13 @@ the person James
         var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
         cm.replaceSelection(spaces);
       }
-    },
-    // gutters: ["CodeMirror-lint-markers"],
-    // lint: true
+    }
   })
 
   .on('keyup', function(cm, event) {
-    // event.keyCodes: 91 = cmd, 17 = ctrl
     if (lastKeyPressed &&
         lastKeyPressed !== 91 &&
         lastKeyPressed !== 17) {
-      // cm.state.completionActive enables keyboard navigation in autocomplete list
-      // show autocomplete for a-z, A-Z, 0-9, - and _
       var input = String.fromCharCode(event.keyCode);
       if (!cm.state.completionActive &&
         (/[a-zA-Z0-9-_]/.test(input))) {
