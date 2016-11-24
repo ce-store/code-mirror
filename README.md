@@ -15,6 +15,10 @@ This project defines a CodeMirror [mode](http://codemirror.net/doc/manual.html#m
 
 * Linting
 
-### Example
+### Use
 
-You can try out an example by opening `index.html` in your browser.
+You can install this using bower:
+
+`bower install --save codemirror-ce`
+
+You can run the example by opening `index.html` in your browser.
