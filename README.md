@@ -11,14 +11,14 @@ This project defines a CodeMirror [mode](http://codemirror.net/doc/manual.html#m
 * Line numbers
 * Auto indentation
 
-### Coming soon!
-
-* Linting
-
-### Use
+### Use:
 
 You can install this using bower:
 
 `bower install --save codemirror-ce`
 
 You can run the example by opening `index.html` in your browser.
+
+### Coming soon!
+
+* Linting
