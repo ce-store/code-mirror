@@ -226,8 +226,7 @@
 
           if (prev3 !== 'there' && // that is a _person_
               prev2 === 'is' &&
-              (prev1 === 'a' ||
-              prev1 === 'an')) {
+              (prev1 === 'a' || prev1 === 'an')) {
             return prevIsA(state, stream);
           } else if (prev1 === 'named') { // named _John_
             return prevNamed(state, stream);
@@ -238,11 +237,10 @@
             return prevHas(state, stream);
           } else if (prev3 === 'there' && // there is a _man_ named
               prev2 === 'is' &&
-              (prev1 === 'a' ||
-              prev1 === 'an')) {
+              (prev1 === 'a' || prev1 === 'an')) {
             return prevThereIs(state, stream);
           } else if (prev3 === 'conceptualise' && // conceptualise a ~ man ~ _M_
-              prev2 === 'a' &&
+              (prev2 === 'a' || prev2 === 'an') &&
               prev1 === '~') {
             return prevConceptualiseTilde(state, stream);
           }
