@@ -3,8 +3,7 @@
   "homepage": "https://github.com/ce-store/code-mirror",
   "description": "CodeMirror mode for Controlled English",
   "main": [
-    "mode/ce/ce.js",
-    "addon/hint/ce-anyword-hint.js"
+    "mode/ce/ce.js"
   ],
   "keywords": [
     "codemirror",
